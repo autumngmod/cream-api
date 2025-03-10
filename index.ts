@@ -13,6 +13,9 @@ declare global {
   };
 }
 
+if (!lua.call)
+  throw new Error("cream runtime was not found!");
+
 /**
  * Calls a function while waiting for its execution to complete and returns its result
  * @param name Name of the function to be called
@@ -58,4 +61,13 @@ export function callWithTimeout<T extends SafeTypes>(name: string, timeout: numb
       reject(error);
     }
   });
+};
+
+/**
+ * Adds a event listener
+ * @param event Name of the event
+ * @param callback Calls when an event has occurred
+ */
+export function listen<T extends Object>(event: string, callback: (body: T) => void) {
+  window.addEventListener(event, e => callback((e as CustomEvent).detail));
 };
