@@ -13,9 +13,6 @@ declare global {
   };
 }
 
-if (!lua.call)
-  throw new Error("cream runtime was not found!");
-
 /**
  * Calls a function while waiting for its execution to complete and returns its result
  * @param name Name of the function to be called
