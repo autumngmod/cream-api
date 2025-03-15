@@ -60,11 +60,35 @@ export function callWithTimeout<T extends SafeTypes>(name: string, timeout: numb
   });
 };
 
+type ListenerCallback = (e: Event) => void;
+
 /**
  * Adds a event listener
  * @param event Name of the event
  * @param callback Calls when an event has occurred
  */
-export function listen<T extends Object>(event: string, callback: (body: T) => void) {
-  window.addEventListener(event, e => callback((e as CustomEvent).detail));
+export function listen<T extends Object>(event: string, callback: (body: T) => void): [string, ListenerCallback] {
+  const listener = (e: Event) => callback((e as CustomEvent).detail);
+
+  window.addEventListener(event, listener);
+
+  return [event, listener];
+};
+
+/**
+ * Removes a event listener
+ *
+ * # Example
+ * ```ts
+ * import { listen, unlisten } from "@autumngmod/cream-api"
+ *
+ * const closer = listen("close", console.log)
+ *
+ * unlisten(closer);
+ * ```
+ * @param event Name of the event
+ * @param callback Calls when an event has occurred
+ */
+export function unlisten([event, callback]: [string, ListenerCallback]) {
+  window.removeEventListener(event, callback);
 };
